@@ -1,7 +1,7 @@
 ---
 title: "Brownlows Bets"
-author: "Your Name"
-date: "Year 2019"
+author: "Briggette Adams"
+date: "Nov. 16, 2019"
 output: 
   html_document:
     number_sections: true
@@ -29,18 +29,122 @@ require(tidyverse)
 
 <!--Decide on your methods:  In this section explain the approach you will take to attack the issue --- how will you decide on a likely estimate of professor Brownlow's earnings or losses after 1137 bets. Also explain how you construct a 95% confidence interval about your estimate of his winnings !-->
 
+To estimate professor Brownlow's earnings or losses after 1137 bets, the data sample gathered from the bets will be compiled by first setting a new object for birthdays (BDAYS) which will contain each possible day of the year from an interval 1:365. Then using our (BDAYS) object we will compare the sample tests of each bet results to whether or not they obtained a unique sample number < 35 which is the total number of birthdays per bet. After all 1,137 bets there will be a total amount of money for the bets either in positive or negative money total due to earnings or loses. This data will be shown as a 95% confidence interval over a histogram.
+
 
 #Profit Estimate
 
 <!--Explain and display the results of your method of coming up with the estimate of professor Brownlows betting!-->
+
+```{r}
+Bdays = 1:365
+Bsamples = vector("numeric")
+TotalDollars = 0
+SaveDollars = vector("numeric")
+
+```
+
+I am going to run the simulator 1137 times.
+
+```{r}
+for (loop in 1:1000) {
+  
+  TotalDollars = 0
+  classsize = 35
+  for (i in 1:1137) {
+    Bsamples = sample(Bdays,35, replace = TRUE)
+    if (length(unique(Bsamples)) == 35) {
+      TotalDollars = TotalDollars -2
+    } else{
+      TotalDollars = TotalDollars +1
+    }
+  }
+  
+  SaveDollars[loop] = TotalDollars
+}
+  
+hist(SaveDollars)
+var(SaveDollars)
+print(paste("average return =",mean(SaveDollars)))
+
+```
+
+Professor Brownlow is profiting 411 dollars and he averages 503 dollars per test taken. 
 
 
 # Confidence interval of Brownlows earning
 
 <!--Explain and display your method of coming up with a 95% confidence interval of  professor Brownlows-->
 
+```{r}
+varSorted = sort(SaveDollars)
+LCL = varSorted[25]
+UCL = varSorted[975]
+print(paste("UCL = ",UCL, "LCL = ",LCL))
+```
+
+```{r}
+stdevDollars = sd(SaveDollars)
+meanDollars = mean(SaveDollars)
+CI = c(meanDollars-2*stdevDollars, meanDollars+2*stdevDollars)
+
+print(CI)
+```
+
+The UCL is 576 and our LCL is 429 for this test which averages at around 503 dollars. 
+
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If professor Brownlow is consistantly making or losing money how could he change his payout so that his profits center on zero?  Also discuss what size his class should be in order to have his current scheme balance at zero profit.!-->
 
+```{r}
+for (loop in 1:1000) {
+  
+  TotalDollars = 0
+  classsize = 35
+  for (i in 1:1137) {
+    Bsamples = sample(Bdays,35, replace = TRUE)
+    if (length(unique(Bsamples)) == 35) {
+      TotalDollars = TotalDollars -4.4
+    } else{
+      TotalDollars = TotalDollars +1
+    }
+  }
+  
+  SaveDollars[loop] = TotalDollars
+}
+  
+hist(SaveDollars)
+var(SaveDollars)
+print(paste("average return =",mean(SaveDollars)))
+
+```
+
+In the testing we tested the money that Brownlow bet which was 2 dollars to every 1 doolar. We tested between 5 and 10 dollars and the value was too high so we lowered it down to 4 dollars and .40 cents. With this Brownlow has around a zero profit. 
+
+
+```{r}
+for (loop in 1:1000) {
+  
+  TotalDollars = 0
+  classsize = 28
+  for (i in 1:1137) {
+    Bsamples = sample(Bdays,28, replace = TRUE)
+    if (length(unique(Bsamples)) == 28) {
+      TotalDollars = TotalDollars -2
+    } else{
+      TotalDollars = TotalDollars +1
+    }
+  }
+  
+  SaveDollars[loop] = TotalDollars
+}
+  
+hist(SaveDollars)
+var(SaveDollars)
+print(paste("average return =",mean(SaveDollars)))
+
+```
+
+With this testing we had to change the amount of students from 50 to 40 to 30 to 28 in order to get near the 0 profit. 
